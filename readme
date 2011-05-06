@@ -1,0 +1,11 @@
+BF2GO (brainfuck to go)
+
+Compiles brainfuck code by transforming into and compiling Go (http://golang.org)
+
+Running make will compile bf2go and with that compile bf/helloworld.bf
+
+The stack is initially 30k long and grows by 2
+
+The stack is dumped into a file named bfcoredump
+
+Have fun!
