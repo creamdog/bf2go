@@ -17,8 +17,8 @@ type brainfuck struct {
 
 func Translate(source string, dest string, debug bool) {
 
-	in,_ := os.Open(source,os.O_RDONLY,0666)
-	out,_ := os.Open(dest,os.O_CREATE|os.O_RDWR|os.O_TRUNC,0666)
+	in,_ := os.Open(source)
+	out,_ := os.OpenFile(dest,os.O_CREATE|os.O_RDWR|os.O_TRUNC,0666)
 
 	bf := &brainfuck{in,out,make([]byte,1),1,1,debug}
 
@@ -42,7 +42,7 @@ func (bf *brainfuck) initalizeOutputFile() {
 	bf.DestFile.WriteString("\n\n");
 
 	bf.DestFile.WriteString("func coredump(stack []byte){\n")
-	bf.DestFile.WriteString("\tfile,_ := os.Open(\"bfcoredump\",os.O_CREATE|os.O_RDWR|os.O_TRUNC,0666)\n")
+	bf.DestFile.WriteString("\tfile,_ := os.OpenFile(\"bfcoredump\",os.O_CREATE|os.O_RDWR|os.O_TRUNC,0666)\n")
 	bf.DestFile.WriteString("\tfile.Write(stack)\n")
 	bf.DestFile.WriteString("\tfile.Close()\n")	
 	bf.DestFile.WriteString("}\n")
@@ -124,7 +124,7 @@ func (bf *brainfuck) ParseToken() {
 			bf.DestFile.WriteString("\tfor i:=start;i<len(stack);i++ {\n")
 			bf.DestFile.WriteString("\tif stack[i] != 0 {\n\tend++\n\t} else {\n\tbreak;\n\t}\n")
 			bf.DestFile.WriteString("\t}\n")
-			bf.DestFile.WriteString("\tfile,error := os.Open((string)(stack[start:end]),os.O_CREATE|os.O_RDWR|os.O_TRUNC,0666)\n")
+			bf.DestFile.WriteString("\tfile,error := os.OpenFile((string)(stack[start:end]),os.O_CREATE|os.O_RDWR|os.O_TRUNC,0666)\n")
 			bf.DestFile.WriteString("\tif error == nil { writer = bufio.NewWriter(file) } else { writer.Write(([]byte)(error.String())) }\n")
 			bf.DestFile.WriteString("\tbreak;\n")
 			bf.DestFile.WriteString("\tdefault:\n")
@@ -146,12 +146,12 @@ func (bf *brainfuck) ParseToken() {
 			bf.DestFile.WriteString("\tif stack[stackPosition] == 0 {\n\t\tbreak;\n\t}\n")
 			bf.DestFile.WriteString("\t}\n")
 		break;
-		/*case '}':
+		case '}':
 			bf.DestFile.WriteString("\tgo func(stackPosition int){\n")
 		break;
 		case '{':
 			bf.DestFile.WriteString("\t}(stackPosition+0)\n")
-		break;*/
+		break;
 		default:
 			log.Printf("ignore '%c'",token)
 		break;
